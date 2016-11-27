@@ -26,23 +26,27 @@ function [U,V,r2] = baselineAls(dataset,r2_train,source,r2_valid,ITER,lr,tol,lam
     fprintf('Iter: %d, train loss: %f, val_loss: %f\n',iter,train_loss_old,val_loss); 
  
     [row,col,value] = find(r2);
+    uniqr = unique(row);
+    uniqc = unique(col);
     while 1,
         count = 0;
 
         tic;
         YTY = V'*V;
-        XTX = U'*U; 
-        for ind=1:length(row),
-            u = row(ind);
-            U(u,:) = r2(u,:)*V*(YTY+lamdaU*eye(K)); 
+        XTX = U'*U;
+        for ind=1:length(uniqr),
+            u = uniqr(ind);
+            U(u,:) = (YTY+lamdaU*eye(K))\(V'*r2(u,:)');
+            U(u,:) = U(u,:).* (U(u,:)>0);
             if mod(count,1000)==0,
                 [train_loss_new] = validate();
             end
             count = count + 1;
         end
-        for ind=1:length(col),
-            i = col(ind);
-            V(i,:) = r2(:,i)'*U*(XTX+lamdaI*eye(K)); 
+        for ind=1:length(uniqc),
+            i = uniqc(ind);
+            V(i,:) = (XTX+lamdaI*eye(K))\(U'*r2(:,i)); 
+            V(i,:) = V(i,:).*(V(i,:)>0);
             if mod(count,1000)==0,
                 [train_loss_new] = validate();
             end
