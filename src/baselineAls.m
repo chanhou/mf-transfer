@@ -33,19 +33,21 @@ function [U,V,r2] = baselineAls(dataset,r2_train,source,r2_valid,ITER,lr,tol,lam
 
         tic;
         YTY = V'*V;
-        XTX = U'*U;
+        lU = lamdaU*eye(K);
         for ind=1:length(uniqr),
             u = uniqr(ind);
-            U(u,:) = (YTY+lamdaU*eye(K))\(V'*r2(u,:)');
+            U(u,:) = (YTY+lU)\(V'*r2(u,:)');
             U(u,:) = U(u,:).* (U(u,:)>0);
             if mod(count,1000)==0,
                 [train_loss_new] = validate();
             end
             count = count + 1;
         end
+        XTX = U'*U;
+        lI = lamdaI*eye(K);
         for ind=1:length(uniqc),
             i = uniqc(ind);
-            V(i,:) = (XTX+lamdaI*eye(K))\(U'*r2(:,i)); 
+            V(i,:) = (XTX+lI)\(U'*r2(:,i)); 
             V(i,:) = V(i,:).*(V(i,:)>0);
             if mod(count,1000)==0,
                 [train_loss_new] = validate();
