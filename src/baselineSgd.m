@@ -21,11 +21,17 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
     %V = rand(M,K);
 
     pred = U*V';
+    pred = max(pred,0); pred = min(pred,1);
     train_loss_old = calRMSE(r2,pred);
     val_loss = calRMSE(val,pred);
     fprintf('Iter: %d, train loss: %f, val_loss: %f\n',iter,train_loss_old,val_loss); 
  
     [row,col,value] = find(r2);
+
+    grad_u = zeros(1,size(U,2));
+    grad_v = zeros(1,size(V,2));
+    epsilon = sqrt(eps);
+
     while 1,
         count = 0;
         % random shuffle index
@@ -33,23 +39,36 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
         row = row(p); col = col(p);
 
         tic; 
+        %for ind=1:length(row),
+        %u = row(ind); i = col(ind);
         for ind=1:length(row),
-        %for ind=1:N,
-            u = row(ind); i = col(ind);
-            %[u idx] = datasample(row,1);
-            %i = col(idx);
+            [u idx] = datasample(row,1);
+            i = col(idx);
+
             pred = U(u,:)*V(i,:)';
+            pred = max(pred,0); pred = min(pred,1);
             e = r2(u,i) - pred;
-            U(u,:) = U(u,:) + lr*(e*V(i,:) - lamdaU*U(u,:));
-            V(i,:) = V(i,:) + lr*(e*U(u,:) - lamdaI*V(i,:));
-            %U(U<0)=0;V(V<0)=0;
+
+            grad_u_tmp = e*V(i,:) - lamdaU*U(u,:);
+            grad_v_tmp = e*U(u,:) - lamdaI*V(i,:);
+
+            grad_u = grad_u + grad_u_tmp.^2;
+            grad_v = grad_v + grad_v_tmp.^2;
+
+            U(u,:) = U(u,:) + lr.*grad_u_tmp./(sqrt(grad_u)+epsilon);
+            V(i,:) = V(i,:) + lr.*grad_v_tmp./(sqrt(grad_v)+epsilon);
+            U(u,:) = max(U(u,:),0);
+            V(i,:) = max(V(i,:),0);
+
             if mod(count,1000)==0,
                 [train_loss_new] = validate();
+                %{
                 if train_loss_new > train_loss_old,
                     lr = lr*0.1;
                     fprintf('lr change to: %f\n',lr);
                 end
                 train_loss_old = train_loss_new;
+                %}
             end
             count = count + 1;
         end 
@@ -64,6 +83,7 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
 
 function [train_loss]=validate()
     pred = U*V';
+    pred = max(pred,0); pred = min(pred,1);
     train_loss = calRMSE(r2,pred);
     val_loss = calRMSE(val,pred);
     fprintf('Iter: %d-%d, train loss: %f, val_loss: %f, time: %f\n',iter,count,train_loss,val_loss,toc); 
@@ -72,3 +92,4 @@ end
 
 
 end
+
