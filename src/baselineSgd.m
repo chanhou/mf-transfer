@@ -1,4 +1,4 @@
-function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU,lamdaI,lamdaB,K,C)
+function [U,V,r2] = baselineSgd(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU,lamdaI,lamdaB,K,C)
 
     rng('shuffle');
     addpath(dataset);
@@ -28,8 +28,9 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
  
     [row,col,value] = find(r2);
 
-    grad_u = zeros(1,size(U,2));
-    grad_v = zeros(1,size(V,2));
+    batch = 1;
+    grad_u = zeros(batch,size(U,2));
+    grad_v = zeros(batch,size(V,2));
     epsilon = sqrt(eps);
 
     while 1,
@@ -39,11 +40,12 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
         row = row(p); col = col(p);
 
         tic; 
+        for ind=1:round(length(row)/batch),
+            u = row(((ind-1)*batch)+1:(ind)*batch);
+            i = col(((ind-1)*batch)+1:(ind)*batch);
         %for ind=1:length(row),
-        %u = row(ind); i = col(ind);
-        for ind=1:length(row),
-            [u idx] = datasample(row,1);
-            i = col(idx);
+        %    [u idx] = datasample(row,1);
+        %    i = col(idx);
 
             pred = U(u,:)*V(i,:)';
             pred = max(pred,0); pred = min(pred,1);
@@ -72,7 +74,7 @@ function [U,V,r2] = baseline(dataset,r2_train,source,r2_valid,ITER,lr,tol,lamdaU
             end
             count = count + 1;
         end 
-                      
+ 
         validate();
 
         iter = iter + 1;
