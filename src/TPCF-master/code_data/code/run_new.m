@@ -9,7 +9,8 @@ beta = [0];
 
 % on kdd2
 %
-load /tmp2/chanhou/mf-transfer/test3/data.mat
+%load /tmp2/chanhou/mf-transfer/test3/data.mat
+load ../../../../test3/data.mat
 %}
 %{
 load ../data/netflix_movie_data0001.mat
