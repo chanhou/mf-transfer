@@ -51,7 +51,7 @@ sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v(v,:)).*l_u_aux(u,:))) + sum(su
 
 
 
-fff = fopen('./test2_record.txt','w');
+fff = fopen('./test2_record.txt','a');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 max_iter = 20;
 

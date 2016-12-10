@@ -11,7 +11,7 @@ dd = [10 20 30 40 50];
 % on kdd2
 %
 %load /tmp2/chanhou/mf-transfer/test3/data.mat
-load ../../../../test2/data.mat
+load ../../../../test1/data.mat
 %}
 %{
 load ../data/netflix_movie_data0001.mat
@@ -53,7 +53,7 @@ for a = 1 : numel(alpha)
             ind_v_source{i} = find(source(:,2) == i);
         end
         flag = 0;
-        [rmse ] = TPCF_3_12(train_train, train_valid, train_valid, d, ind_u_train , ind_v_train, source, ind_u_source, ind_v_source, alpha(a), beta(b), flag);
+        [rmse ] = TPCF_3_1(train_train, train_valid, train_valid, d, ind_u_train , ind_v_train, source, ind_u_source, ind_v_source, alpha(a), beta(b), flag);
         RMSE = [RMSE];
         MAE = [MAE];
     end
