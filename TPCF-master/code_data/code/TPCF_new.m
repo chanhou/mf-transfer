@@ -1,4 +1,4 @@
-function [test_RMSE ] = TPCF(R, R_val, RT, d, ind_u_train, ind_v_train, RN, ind_u_RN, ind_v_RN, alpha, beta, flag)
+function [test_RMSE ] = TPCF_new(R, R_val, RT, d, ind_u_train, ind_v_train, RN, ind_u_RN, ind_v_RN, alpha, beta, flag)
 test_RMSE = []; 
 alpha_u = 0.00; alpha_v = 0.00;
 [test_RMSE] = learn(R, R_val, RT, d, ind_u_train, ind_v_train, RN, ind_u_RN, ind_v_RN, alpha, beta, flag)
@@ -8,10 +8,10 @@ function [test_RMSE ] = learn(R, R_val, RT, d, ind_u_train, ind_v_train, RN, ind
 randn('state', 0);
 rand('state', 0);
 test_RMSE = [];
-n_user = max(R(:,1)) - min(R(:,1)) + 1;
-n_item = max(R(:,2)) - min(R(:,2)) + 1;
-aux_n_user = max(RN(:,1)) - min(RN(:,1)) + 1;
-aux_n_item = max(RN(:,2)) - min(RN(:,2)) + 1;
+n_user = 500%max(R(:,1)) - min(R(:,1)) + 1;
+n_item = 1000%max(R(:,2)) - min(R(:,2)) + 1;
+aux_n_user = 500%max(RN(:,1)) - min(RN(:,1)) + 1;
+aux_n_item = 500%max(RN(:,2)) - min(RN(:,2)) + 1;
 
 mean_r = mean(R(:,3));
 mean_r_aux = mean(RN(:,3));
