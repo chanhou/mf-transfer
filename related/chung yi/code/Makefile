@@ -1,6 +1,7 @@
 data:=test1
 
 # 3-2: R1: 0.182915, R2: 0.171701 
+# 3-2: after mapping, 0.181202 
 
 1-1: 
 	cd ./1_MF
@@ -25,4 +26,4 @@ data:=test1
 	cd ./3_ratingPredictionWithMatching
 	g++ -O2 combinedMF.cpp -o combinedMF
 	beta=40
-	./combinedMF ../../../../test1/train_train_matlab.txt ../../../../test1/train_valid_matlab.txt ../../../../test1/train_valid_matlab.txt ../../../../test1/source_matlab.txt ../2_latentSpaceMatching_and_matchingRefinement/idxP ../2_latentSpaceMatching_and_matchingRefinement/idxQ 1 $beta $beta
+	./combinedMF ../../../../test1/train_train_matlab.txt ../../../../test1/train_valid_matlab.txt ../../../../test1/train_valid_matlab.txt ../../../../test1/source_matlab.txt ../2_latentSpaceMatching_and_matchingRefinement/idxP ../2_latentSpaceMatching_and_matchingRefinement/idxQ 1 $beta $beta &> log

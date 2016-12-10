@@ -14,7 +14,8 @@ shuffle-test2:
 	python to_matlab.py test2
 
 shuffle-test3:
-	shuf -n 605 test3/train.txt > test3/valid.txt # 10%
+	shuf -n 605 test3/train.txt > test3/train_valid.txt # 10%
+	shuf -n 842 test3/source.txt > test3/source_valid.txt # 10%
 	python erase.py test3
 	python to_matlab.py test3
 
