@@ -4,9 +4,9 @@ MAE = [];
 d = 20;
 % alpha, beta notation reverse
 % in this code, beta=0
-alpha = [1, 1e-1, 1e-2, 1e-3];
+alpha = [1e-3,1e-4,1e-5,1e-6, 1e-7];
 beta = [0];
-dd = [10 20 30 40 50];
+dd = [20];
 
 % on kdd2
 %

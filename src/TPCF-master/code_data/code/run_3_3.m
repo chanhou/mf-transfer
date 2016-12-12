@@ -1,10 +1,10 @@
 clc ; close all ; clear all;
 RMSE = [];
 MAE = [];
-d = 10;
+d = 20;
 % alpha, beta notation reverse
 % in this code, beta=0
-alpha = [1e-2];
+alpha = [1e-1,1e-2,1e-3,1e-4];
 beta = [0];
 
 % on kdd2
@@ -51,7 +51,7 @@ for a = 1 : numel(alpha)
             ind_v_source{i} = find(source(:,2) == i);
         end
         flag = 0;
-        [rmse ] = TPCF_new(train_train, train_valid, train_valid, d, ind_u_train , ind_v_train, source, ind_u_source, ind_v_source, alpha(a), beta(b), flag);
+        [rmse ] = TPCF_3_3(train_train, train_valid, train_valid, d, ind_u_train , ind_v_train, source, ind_u_source, ind_v_source, alpha(a), beta(b), flag);
         RMSE = [RMSE];
         MAE = [MAE];
     end
