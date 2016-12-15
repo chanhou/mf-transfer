@@ -25,8 +25,8 @@ g_v  = rand(n_item , d) ;
 l_u_aux = 0.1*randn(aux_n_user,d);
 l_v_aux = 0.1*randn(aux_n_item,d);
 
-g_u_aux  = 1*rand(aux_n_user , d) ;
-g_v_aux  = 1*rand(aux_n_item , d) ;
+g_u_aux  = 1*rand(aux_n_user, d) ;
+g_v_aux  = 1*rand(aux_n_item, d) ;
 
 m_u =  mean(l_u) + (alpha)*mean(l_u_aux);
 m_v =  mean(l_v)  + (alpha) *mean(l_v_aux);
@@ -50,9 +50,8 @@ sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + su
     - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
 
 
-fff = fopen('test3_result_debug.txt','a');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-max_iter = 50;
+max_iter = 20;
 
 best_val_rmse = 1000;
 best_l_u = l_u;
@@ -146,7 +145,6 @@ for iter = 1 : max_iter
         break;
     end
     prev_rmse = rmse;
-    fprintf(fff,'%d,%.7f,%d,%.6f,%.6f,%.6f\n' , d,alpha,iter,rmse, rmse1, best_val_rmse);
     fprintf('val RMSE = %.5f , train RMSE = %.5f, best val RMSE = %.5f\n' , rmse, rmse1, best_val_rmse);
     u = R(:,1); v = R(:,2); r = R(:,3) - mean_r;
     sigma = (sum(r.^2)  + sum(sum((l_u(u,:).*g_v(v,:)).*l_u(u,:))) + sum(sum((l_v(v,:).*g_u(u,:)).*l_v(v,:)))...
