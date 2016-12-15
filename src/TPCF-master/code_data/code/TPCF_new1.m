@@ -22,11 +22,11 @@ l_v = 0.1*randn(n_item,d);
 g_u  = rand(n_user , d) ;
 g_v  = rand(n_item , d) ;
 
-l_u_aux = 0.1*randn(n_user_aux,d);
-l_v_aux = 0.1*randn(n_item_aux,d);
+l_u_aux = 0.1*randn(aux_n_user,d);
+l_v_aux = 0.1*randn(aux_n_item,d);
 
-g_u_aux  = 1*rand(n_user_aux, d) ;
-g_v_aux  = 1*rand(n_item_aux, d) ;
+g_u_aux  = 1*rand(aux_n_user, d) ;
+g_v_aux  = 1*rand(aux_n_item, d) ;
 
 m_u =  mean(l_u) + (alpha)*mean(l_u_aux);
 m_v =  mean(l_v)  + (alpha) *mean(l_v_aux);

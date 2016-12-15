@@ -8,10 +8,10 @@ function [test_RMSE ] = learn(R, R_val, RT, d, ind_u_train, ind_v_train, RN, ind
 randn('state', 0);
 rand('state', 0);
 test_RMSE = [];
-n_user = 50000%max(R(:,1)) - min(R(:,1)) + 1;
-n_item = 5000%max(R(:,2)) - min(R(:,2)) + 1;
-aux_n_user = 50000%max(RN(:,1)) - min(RN(:,1)) + 1;
-aux_n_item = 5000%max(RN(:,2)) - min(RN(:,2)) + 1;
+n_user = 20000%max(R(:,1)) - min(R(:,1)) + 1;
+n_item = 2000%max(R(:,2)) - min(R(:,2)) + 1;
+aux_n_user = 30000%max(RN(:,1)) - min(RN(:,1)) + 1;
+aux_n_item = 3000%max(RN(:,2)) - min(RN(:,2)) + 1;
 
 mean_r = mean(R(:,3));
 mean_r_aux = mean(RN(:,3));
@@ -22,11 +22,11 @@ l_v = 0.1*randn(n_item,d);
 g_u  = rand(n_user , d) ;
 g_v  = rand(n_item , d) ;
 
-l_u_aux = 0.1*randn(n_user,d);
-l_v_aux = 0.1*randn(n_item,d);
+l_u_aux = 0.1*randn(aux_n_user,d);
+l_v_aux = 0.1*randn(aux_n_item,d);
 
-g_u_aux  = 1*rand(n_user , d) ;
-g_v_aux  = 1*rand(n_item , d) ;
+g_u_aux  = 1*rand(aux_n_user , d) ;
+g_v_aux  = 1*rand(aux_n_item , d) ;
 
 m_u =  mean(l_u) + (alpha)*mean(l_u_aux);
 m_v =  mean(l_v)  + (alpha) *mean(l_v_aux);
@@ -46,14 +46,14 @@ else
 end
 
 u = RN(:,1); v = RN(:,2); r = RN(:,3) - mean_r_aux;
-sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
+sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
     - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
 
 
 
-fff = fopen('./test2_record.txt','a');
+fff = fopen('./test2_record_debug.txt','a');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-max_iter = 20;
+max_iter = 50;
 
 best_val_rmse = 1000;
 best_l_u = l_u;
@@ -145,13 +145,13 @@ for iter = 1 : max_iter
         break;
     end
     prev_rmse = rmse;
-    fprintf(fff,'%.6f,%f,%d,%.6f,%.6f,%.6f\n' , d,alpha,iter,rmse, rmse1, best_val_rmse);
+    fprintf(fff,'%d,%.7f,%d,%.6f,%.6f,%.6f\n' , d,alpha,iter,rmse, rmse1, best_val_rmse);
     fprintf('val RMSE = %.5f , train RMSE = %.5f, best val RMSE = %.5f\n' , rmse, rmse1, best_val_rmse);
     u = R(:,1); v = R(:,2); r = R(:,3) - mean_r;
     sigma = (sum(r.^2)  + sum(sum((l_u(u,:).*g_v(v,:)).*l_u(u,:))) + sum(sum((l_v(v,:).*g_u(u,:)).*l_v(v,:)))...
         - 2 * sum(r.*sum(l_u(u,:).*l_v(v,:),2)) + sum(sum((l_u(u,:).*l_v(v,:)),2).^2) + sum(sum(g_u(u,:).*g_v(v,:))))./size(R,1);
     u = RN(:,1); v = RN(:,2); r = RN(:,3) - mean_r_aux;
-    sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
+    sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
         - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
     if flag == 1
         sigma = 1;
