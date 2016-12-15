@@ -46,7 +46,7 @@ else
 end
 
 u = RN(:,1); v = RN(:,2); r = RN(:,3) - mean_r_aux;
-sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
+sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
     - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
 
 
@@ -104,6 +104,8 @@ for iter = 1 : max_iter
                 temp  = 1./sigma2 .*(l_v_aux(v_ind,:)'*l_v_aux(v_ind,:) + diag(sum(g_v_aux(v_ind,:),1))');
                 temp1 = 1./sigma2 .* sum(repmat(r,1,d).*l_v_aux(v_ind,:),1)';
                 temp2 =  1./sigma2 .* sum(l_v_aux(v_ind,:).^2 + g_v_aux(v_ind,:),1);
+                l_u_aux(i,:) = inv(inv_u +  temp ) * (inv_u_mul_m_u + temp1) ;
+                g_u_aux(i,:) = 1./(diag(inv_u)' +temp2 );
             end
             parfor i  = 1 : aux_n_item
                 ind = ind_v_RN{i};
@@ -148,7 +150,7 @@ for iter = 1 : max_iter
     sigma = (sum(r.^2)  + sum(sum((l_u(u,:).*g_v(v,:)).*l_u(u,:))) + sum(sum((l_v(v,:).*g_u(u,:)).*l_v(v,:)))...
         - 2 * sum(r.*sum(l_u(u,:).*l_v(v,:),2)) + sum(sum((l_u(u,:).*l_v(v,:)),2).^2) + sum(sum(g_u(u,:).*g_v(v,:))))./size(R,1);
     u = RN(:,1); v = RN(:,2); r = RN(:,3) - mean_r_aux;
-    sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
+    sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
         - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
     if flag == 1
         sigma = 1;
