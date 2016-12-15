@@ -17,20 +17,36 @@ mean_r = mean(R(:,3));
 mean_r_aux = mean(RN(:,3));
 
 [n_user,n_item]
+% Lambda_u ;P,Q
 l_u = 0.1*randn(n_user,d);
 l_v = 0.1*randn(n_item,d);
+% Gamma_u, v
 g_u  = rand(n_user , d) ;
 g_v  = rand(n_item , d) ;
 
-l_u_aux = 0.1*randn(n_user_aux,d);
-l_v_aux = 0.1*randn(n_item_aux,d);
+l_u_aux = 0.1*randn(aux_n_user, d);
+l_v_aux = 0.1*randn(aux_n_item, d);
 
-g_u_aux  = 1*rand(n_user_aux, d) ;
-g_v_aux  = 1*rand(n_item_aux, d) ;
+g_u_aux  = 1*rand(aux_n_user, d) ;
+g_v_aux  = 1*rand(aux_n_item, d) ;
 
+% Theta_u, v
+t_u = 0.1 * rand(n_user);
+t_v = 0.1 * rand(n_item);
+% Eta_u, v
+e_u = 1 * rand(n_user);
+e_v = 1 * rand(n_item);
+
+t_u_aux = 0.1 * rand(aux_n_user);
+t_v_aux = 0.1 * rand(aux_n_item);
+e_u_aux = 1 * rand(aux_n_user);
+e_v_aux = 1 * rand(aux_n_item);
+
+% Mu_u, v
 m_u =  mean(l_u) + (alpha)*mean(l_u_aux);
 m_v =  mean(l_v)  + (alpha) *mean(l_v_aux);
 
+% BIG Sigma_u, v
 cov_u = ((l_u - repmat(m_u,size(l_u,1),1))' *  (l_u - repmat(m_u,size(l_u,1),1)) + diag(sum(g_u,1)'))./n_user ;
 cov_v = ((l_v - repmat(m_v,size(l_v,1),1))' *  (l_v - repmat(m_v,size(l_v,1),1)) + diag(sum(g_v,1)'))./n_item;
 cov_u = cov_u + (alpha) * ((l_u_aux - repmat(m_u,size(l_u_aux,1),1))' *  (l_u_aux - repmat(m_u,size(l_u_aux,1),1)) + diag(sum(g_u_aux,1)'))./aux_n_user;
@@ -38,6 +54,7 @@ cov_v = cov_v + (alpha) * ((l_v_aux - repmat(m_v,size(l_v_aux,1),1))' *  (l_v_au
 
 u = R(:,1); v = R(:,2); r = R(:,3) - mean_r;
 if flag == 0
+    % small Sigma
     sigma = (sum(r.^2)  + sum(sum((l_u(u,:).*g_v(v,:)).*l_u(u,:))) + sum(sum((l_v(v,:).*g_u(u,:)).*l_v(v,:)))...
         - 2 * sum(r.*sum(l_u(u,:).*l_v(v,:),2)) + sum(sum((l_u(u,:).*l_v(v,:)),2).^2) + sum(sum(g_u(u,:).*g_v(v,:))))./size(R,1);
 else
@@ -46,6 +63,7 @@ else
 end
 
 u = RN(:,1); v = RN(:,2); r = RN(:,3) - mean_r_aux;
+% small Gamma
 sigma2 = (sum(r.^2)  + sum(sum((l_u_aux(u,:).*g_v_aux(v,:)).*l_u_aux(u,:))) + sum(sum((l_v_aux(v,:).*g_u_aux(u,:)).*l_v_aux(v,:)))...
     - 2 * sum(r.*sum(l_u_aux(u,:).*l_v_aux(v,:),2)) + sum(sum((l_u_aux(u,:).*l_v_aux(v,:)),2).^2) + sum(sum(g_u_aux(u,:).*g_v_aux(v,:))))./size(RN,1);
 
@@ -104,8 +122,6 @@ for iter = 1 : max_iter
                 temp  = 1./sigma2 .*(l_v_aux(v_ind,:)'*l_v_aux(v_ind,:) + diag(sum(g_v_aux(v_ind,:),1))');
                 temp1 = 1./sigma2 .* sum(repmat(r,1,d).*l_v_aux(v_ind,:),1)';
                 temp2 =  1./sigma2 .* sum(l_v_aux(v_ind,:).^2 + g_v_aux(v_ind,:),1);
-                l_u_aux(i,:) = inv(inv_u +  temp ) * (inv_u_mul_m_u + temp1) ;
-                g_u_aux(i,:) = 1./(diag(inv_u)' +temp2 );
             end
             parfor i  = 1 : aux_n_item
                 ind = ind_v_RN{i};
@@ -146,6 +162,7 @@ for iter = 1 : max_iter
     end
     prev_rmse = rmse;
     fprintf('val RMSE = %.5f , train RMSE = %.5f, best val RMSE = %.5f\n' , rmse, rmse1, best_val_rmse);
+    % mean_r, empirical bias,  is added back in predict
     u = R(:,1); v = R(:,2); r = R(:,3) - mean_r;
     sigma = (sum(r.^2)  + sum(sum((l_u(u,:).*g_v(v,:)).*l_u(u,:))) + sum(sum((l_v(v,:).*g_u(u,:)).*l_v(v,:)))...
         - 2 * sum(r.*sum(l_u(u,:).*l_v(v,:),2)) + sum(sum((l_u(u,:).*l_v(v,:)),2).^2) + sum(sum(g_u(u,:).*g_v(v,:))))./size(R,1);

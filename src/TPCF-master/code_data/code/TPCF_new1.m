@@ -73,8 +73,8 @@ for iter = 1 : max_iter
                     ind = ind_u_train{i};
                     r = R(ind,3) - mean_r;
                     v_ind = R(ind  , 2);
-                    temp  = 1./sigma .*(l_v(v_ind,:)'*l_v(v_ind,:) + diag(sum(g_v(v_ind,:),1))');
-                    temp1 = 1./sigma .* sum(repmat(r,1,d).*l_v(v_ind,:),1)';
+                    temp  = l_v(v_ind,:)'*l_v(v_ind,:) + diag(sum(g_v(v_ind,:),1))';
+                    temp1 = sum(repmat(r,1,d).*l_v(v_ind,:),1)';
                     temp2 =  1./sigma .* sum(l_v(v_ind,:).^2 + g_v(v_ind,:),1);
                 else
                     temp = 0; temp1 = 0; temp2 = 0;
@@ -87,8 +87,8 @@ for iter = 1 : max_iter
                     ind = ind_v_train{i};
                     r = R(ind,3) - mean_r;
                     u_ind = R(ind  , 1);
-                    temp = 1./sigma .*(l_u(u_ind,:)'*l_u(u_ind,:) + diag(sum(g_u(u_ind,:),1))');
-                    temp1 =1./sigma .* sum(repmat(r,1,d).*l_u(u_ind,:),1)';
+                    temp = l_u(u_ind,:)'*l_u(u_ind,:) + diag(sum(g_u(u_ind,:),1))';
+                    temp1 =sum(repmat(r,1,d).*l_u(u_ind,:),1)';
                     temp2 =1./sigma .* sum(l_u(u_ind,:).^2 + g_u(u_ind,:),1);
                 else
                     temp = 0 ;temp1 = 0; temp2= 0 ;
@@ -104,8 +104,6 @@ for iter = 1 : max_iter
                 temp  = 1./sigma2 .*(l_v_aux(v_ind,:)'*l_v_aux(v_ind,:) + diag(sum(g_v_aux(v_ind,:),1))');
                 temp1 = 1./sigma2 .* sum(repmat(r,1,d).*l_v_aux(v_ind,:),1)';
                 temp2 =  1./sigma2 .* sum(l_v_aux(v_ind,:).^2 + g_v_aux(v_ind,:),1);
-                l_u_aux(i,:) = inv(inv_u +  temp ) * (inv_u_mul_m_u + temp1) ;
-                g_u_aux(i,:) = 1./(diag(inv_u)' +temp2 );
             end
             parfor i  = 1 : aux_n_item
                 ind = ind_v_RN{i};
