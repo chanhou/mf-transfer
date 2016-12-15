@@ -106,7 +106,7 @@ for iter = 1 : max_iter
                     r = R(ind,3);
                     v_ind = R(ind  , 2);
                     temp  = l_v(v_ind,:)'*l_v(v_ind,:) + diag(sum(g_v(v_ind,:),1))';
-                    temp1 = sum(repmat(r - repmat(t_u(i, :), v_ind, 1) - t_v(v_ind, :),1,d).*l_v(v_ind,:),1)';
+                    temp1 = sum(repmat(r - repmat(t_u(i, :), size(v_ind, 1), 1) - t_v(v_ind, :),1,d).*l_v(v_ind,:),1)';
                     temp2 =  1./sigma .* sum(l_v(v_ind,:).^2 + g_v(v_ind,:),1);
                 else
                     temp = 0; temp1 = 0; temp2 = 0;
@@ -120,7 +120,7 @@ for iter = 1 : max_iter
                     r = R(ind,3);
                     u_ind = R(ind  , 1);
                     temp = l_u(u_ind,:)'*l_u(u_ind,:) + diag(sum(g_u(u_ind,:),1))';
-                    temp1 =sum(repmat(r - t_u(u_ind, :) - repmat(t_v(i, :), u_ind, 1),1,d).*l_u(u_ind,:),1)';
+                    temp1 =sum(repmat(r - t_u(u_ind, :) - repmat(t_v(i, :), size(u_ind, 1), 1),1,d).*l_u(u_ind,:),1)';
                     temp2 =1./sigma .* sum(l_u(u_ind,:).^2 + g_u(u_ind,:),1);
                 else
                     temp = 0 ;temp1 = 0; temp2= 0 ;
@@ -134,7 +134,7 @@ for iter = 1 : max_iter
                 r = RN(ind,3);
                 v_ind = RN(ind  , 2);
                 temp  = l_v_aux(v_ind,:)'*l_v_aux(v_ind,:) + diag(sum(g_v_aux(v_ind,:),1))';
-                temp1 = sum(repmat(r - repmat(t_u_aux(i, :), v_ind, 1) - t_v_aux(v_ind, :),1,d).*l_v_aux(v_ind,:),1)';
+                temp1 = sum(repmat(r - repmat(t_u_aux(i, :), size(v_ind, 1), 1) - t_v_aux(v_ind, :),1,d).*l_v_aux(v_ind,:),1)';
                 temp2 =  1./sigma2 .* sum(l_v_aux(v_ind,:).^2 + g_v_aux(v_ind,:),1);
                 l_u_aux(i,:) = inv(inv_u +  temp ) * (inv_u_mul_m_u + temp1) ;
                 g_u_aux(i,:) = 1./(diag(inv_u)' +temp2 );
@@ -144,7 +144,7 @@ for iter = 1 : max_iter
                 r = RN(ind,3);
                 u_ind = RN(ind  , 1);
                 temp = l_u_aux(u_ind,:)'*l_u_aux(u_ind,:) + diag(sum(g_u_aux(u_ind,:),1))';
-                temp1 =sum(repmat(r - t_u_aux(u_ind, :) - repmat(t_v_aux(i, :), u_ind, 1),1,d).*l_u_aux(u_ind,:),1)';
+                temp1 =sum(repmat(r - t_u_aux(u_ind, :) - repmat(t_v_aux(i, :), size(u_ind, 1), 1),1,d).*l_u_aux(u_ind,:),1)';
                 temp2 =1./sigma2 .* sum(l_u_aux(u_ind,:).^2 + g_u_aux(u_ind,:),1);
                 l_v_aux(i,:) = inv(inv_v + temp ) * (inv_v_mul_m_v + temp1) ;
                 g_v_aux(i,:) = 1./(diag(inv_v )' + temp2);
@@ -155,7 +155,7 @@ for iter = 1 : max_iter
                 r = R(ind,3);
                 v_ind = R(ind  , 2);
                 temp_s = 1./sf + length(unique(v_ind))./sigma;
-                temp_s1 = mf./sf + sum(r-t_v(v_ind, :)-sum(repmat(l_u(i, :),v_ind,1).*l_v(v_ind, :), 2))
+                temp_s1 = mf./sf + sum(r-t_v(v_ind, :)-sum(repmat(l_u(i, :), size(v_ind, 1),1).*l_v(v_ind, :), 2))
                 t_u(i, :) = temp_s1./temp_s;
                 e_u(i, :) = 1./ temp_s;
             end
@@ -164,7 +164,7 @@ for iter = 1 : max_iter
                 r = R(ind,3);
                 u_ind = R(ind  , 1);
                 temp_s = 1./sg + length(unique(u_ind))./sigma;
-                temp_s1 = mg./sg + sum(r-t_u(u_ind, :)-sum(l_u(u_ind, :).*repmat(l_v(i, :),u_ind,1), 2))
+                temp_s1 = mg./sg + sum(r-t_u(u_ind, :)-sum(l_u(u_ind, :).*repmat(l_v(i, :), size(u_ind, 1),1), 2))
                 t_v(i, :) = temp_s1./temp_s;
                 e_v(i, :) = 1./ temp_s;
             end
@@ -173,7 +173,7 @@ for iter = 1 : max_iter
                 r = RN(ind,3);
                 v_ind = RN(ind  , 2);
                 temp_s = 1./sf_aux + length(unique(v_ind))./sigma2;
-                temp_s1 = mf_aux./sf_aux + sum(r-t_v_aux(v_ind, :)-sum(repmat(l_u_aux(i, :),v_ind,1).*l_v_aux(v_ind, :), 2))
+                temp_s1 = mf_aux./sf_aux + sum(r-t_v_aux(v_ind, :)-sum(repmat(l_u_aux(i, :), size(v_ind, 1),1).*l_v_aux(v_ind, :), 2))
                 t_u_aux(i, :) = temp_s1./temp_s;
                 e_u_aux(i, :) = 1./ temp_s;
             end
@@ -182,7 +182,7 @@ for iter = 1 : max_iter
                 r = RN(ind,3);
                 u_ind = RN(ind  , 1);
                 temp_s = 1./sg_aux + length(unique(u_ind))./sigma2;
-                temp_s1 = mg_aux./sg_aux + sum(r-t_u_aux(u_ind, :)-sum(l_u_aux(u_ind, :).*repmat(l_v_aux(i, :),u_ind,1), 2))
+                temp_s1 = mg_aux./sg_aux + sum(r-t_u_aux(u_ind, :)-sum(l_u_aux(u_ind, :).*repmat(l_v_aux(i, :), size(u_ind, 1),1), 2))
                 t_v_aux(i, :) = temp_s1./temp_s;
                 e_v_aux(i, :) = 1./ temp_s;
             end
