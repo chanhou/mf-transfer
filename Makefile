@@ -14,10 +14,13 @@ shuffle-test2:
 	python to_matlab.py test2
 
 shuffle-test3:
-	shuf -n 605 test3/train.txt > test3/train_valid.txt # 10%
-	shuf -n 842 test3/source.txt > test3/source_valid.txt # 10%
+	shuf -n 1200 test3/train.txt > test3/train_valid.txt # 20%
+	shuf -n 1600 test3/source.txt > test3/source_valid.txt # 20%
 	python erase.py test3
 	python to_matlab.py test3
+
+generate-test:
+	python process_test.py
 
 test1-baseline: # 0.1789
 	# ./libmf-2.01/mf-train -l2 0.01 -f 0 -k 128 -t 100 -r 0.1 -s 4 -v 5 --nmf test1/train.txt test1/baseline/baseline1
